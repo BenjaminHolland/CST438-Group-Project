@@ -1,5 +1,5 @@
 <div class="card-3 grey-light-bg" fxLayout="column" fxFlex [style.margin]="'8px'">
-    <mat-list id="chat"  dense #chat>
+    <mat-list id="chat"  dense #chat cdkScrollable fxFlex="100%">
       <mat-list-item *ngFor="let message of this.messages">
         <div id="message">
           [{{message.time}}] {{message.username}}:{{message.data}}

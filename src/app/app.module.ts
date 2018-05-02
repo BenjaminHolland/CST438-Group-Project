@@ -39,6 +39,7 @@ import { MatchesOngoingComponent } from "./components/matches-ongoing/matches-on
 import { MatchesCompletedComponent } from "./components/maches-completed/matches-completed.component";
 import { MatchResultsComponent } from './components/match-results/match-results.component';
 import {MomentModule} from "ngx-moment";
+import {ScrollDispatchModule} from "@angular/cdk/scrolling";
 
 //routes
 const appRoutes: Routes = [
@@ -119,6 +120,7 @@ const appRoutes: Routes = [
     MomentModule,
     MatListModule,
     MatCardModule,
+    ScrollDispatchModule
 
   ],
   providers: [UserService, MapService, TeamService, ChatService],
