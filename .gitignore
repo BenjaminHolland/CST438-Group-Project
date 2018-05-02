@@ -1,4 +1,3 @@
-
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
@@ -32,7 +31,6 @@
 /coverage
 /libpeerconnection.log
 npm-debug.log
-yarn-error.log
 testem.log
 /typings
 
@@ -42,3 +40,4 @@ testem.log
 
 # System Files
 .DS_Store
+Thumbs.db
