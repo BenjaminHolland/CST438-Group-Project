@@ -1,17 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ChatService} from '../../services/chat/chat.service';
 import {FormControl} from "@angular/forms";
 import {environment} from "../../../environments/environment";
 import * as moment from 'moment'
+import {Message} from "../../models/Message";
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, AfterViewChecked {
 
-  public messages: any[];
+  public messages: Message[];
   newMessage: FormControl;
 
   constructor(private chatService: ChatService) {
@@ -21,7 +22,7 @@ export class ChatComponent implements OnInit {
 
   }
 
-  private chatLog: HTMLElement | null = null;
+  @ViewChild('chat', { read: ElementRef }) private chatLog: ElementRef;
 
   ngOnInit() {
 
@@ -29,20 +30,23 @@ export class ChatComponent implements OnInit {
       .onMessage()
       .subscribe(msg => {
         this.messages.push(msg);
+        this.scrollToBottom();
       });
-    this.chatLog = document.getElementById('chat');
-  }
 
+  }
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
 
   //scrolls chat to bottom of div
   scrollToBottom(): void {
-    this.chatLog.scrollTop = this.chatLog.scrollHeight + 20;
+    this.chatLog.nativeElement.scrollTo({left: 0 , top: this.chatLog.nativeElement.scrollHeight, behavior: 'smooth'});
   }
 
 
   //decides if enough messages are in char to need to scroll
   chatShouldScroll(): boolean {
-    return this.chatLog.scrollTop + this.chatLog.clientHeight === this.chatLog.scrollHeight;
+    return this.chatLog.nativeElement.scrollTop + this.chatLog.nativeElement.clientHeight === this.chatLog.nativeElement.scrollHeight;
   }
 
   submitMessage(): void {
@@ -51,10 +55,8 @@ export class ChatComponent implements OnInit {
     this.chatService.sendMessage(this.newMessage.value);
 
     //scroll chat down
-    if (this.chatShouldScroll) {
-      this.scrollToBottom();
-    }
 
+   this.scrollToBottom();
     //reset message input
     this.newMessage.setValue('');
 

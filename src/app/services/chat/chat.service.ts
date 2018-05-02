@@ -3,12 +3,8 @@ import * as io from 'socket.io-client';
 import {Observable} from 'rxjs/Observable';
 import {UserService} from '../user-service/user.service';
 import {environment} from "../../../environments/environment";
-import {MessageModel} from "../../models/Message";
+import {Message, MessageModel} from "../../models/Message";
 
-export interface Message {
-  message: string;
-  username: string;
-}
 
 @Injectable()
 export class ChatService {
