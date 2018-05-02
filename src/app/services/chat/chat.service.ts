@@ -17,7 +17,7 @@ export class ChatService {
 
   constructor(private userService: UserService) {
     console.log('in constructor');
-    this.socket = io.connect(`http://${environment.domain}`);
+    this.socket = io.connect(`https://${environment.domain}`);
   }
 
 

@@ -12,7 +12,7 @@ io.on('connection', socket => {
   console.log('connected')
   socket.on('message', msg => {
     console.log(`got a message: ${msg}`);
-    var date = moment().utc('-8:00').toISOString();
+    let date = moment().utc('-8:00').toISOString();
     date = date.slice(0, 10) + ' ' + date.slice(11, 16);
     msg.time = date;
     io.emit('serverMessage', msg);
