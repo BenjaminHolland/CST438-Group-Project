@@ -16,46 +16,36 @@ export class ChatComponent implements OnInit {
 
   constructor(private chatService: ChatService) {
     this.messages = [];
-
     this.newMessage = new FormControl();
 
 
   }
 
+  private chatLog: HTMLElement | null = null;
 
   ngOnInit() {
 
-    this.chatService.onMessage().subscribe(msg => {
-      this.messages.push(msg);
-    });
-    if (!environment.production) {
-      for (let i = 0; i < 5; i++) {
-        this.messages.push(
-          {
-            time: moment.utc().toISOString(),
-            username: "Dummy",
-            message: `Wow what a message ${i}`
-          });
-      }
-    }
-
+    this.chatService
+      .onMessage()
+      .subscribe(msg => {
+        this.messages.push(msg);
+      });
+    this.chatLog = document.getElementById('chat');
   }
 
 
   //scrolls chat to bottom of div
-  scrollToBottom():void {
-    let chatDiv = document.getElementById('chat');
-    chatDiv.scrollTop = chatDiv.scrollHeight + 20;
+  scrollToBottom(): void {
+    this.chatLog.scrollTop = this.chatLog.scrollHeight + 20;
   }
 
 
   //decides if enough messages are in char to need to scroll
-  chatShouldScroll():void {
-    let chatDiv = document.getElementById('chat');
-    return chatDiv.scrollTop + chatDiv.clientHeight === chatDiv.scrollHeight;
+  chatShouldScroll(): boolean {
+    return this.chatLog.scrollTop + this.chatLog.clientHeight === this.chatLog.scrollHeight;
   }
 
-  submitMessage() :void{
+  submitMessage(): void {
 
     //send message to server
     this.chatService.sendMessage(this.newMessage.value);

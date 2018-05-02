@@ -13,7 +13,7 @@ export interface Message {
 @Injectable()
 export class ChatService {
 
-  private socket: SocketIOClient.Socket = io.connect(`https://${environment.domain}`);
+  private socket: SocketIOClient.Socket = io.connect(environment.chatUrl);
 
   constructor(private userService: UserService) {
   }

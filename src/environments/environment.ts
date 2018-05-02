@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  domain: 'localhost'
+  chatUrl: 'http://localhost'
 };
