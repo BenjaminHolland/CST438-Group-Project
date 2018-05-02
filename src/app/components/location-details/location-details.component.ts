@@ -8,14 +8,14 @@ import { MapService } from '../../services/map/map.service';
   styleUrls: ['./location-details.component.css']
 })
 export class LocationDetailsComponent implements OnInit {
-  
+
   id: string;
   location;
   private sub: any;
   dataLoaded;
 
-  constructor(private route: ActivatedRoute, private mapService: MapService) { 
-  
+  constructor(private route: ActivatedRoute, private mapService: MapService) {
+
   this.location = {
     name: "",
     address: "",
@@ -24,29 +24,28 @@ export class LocationDetailsComponent implements OnInit {
     activity: "",
     date: null
     };
-    
+
     this.dataLoaded = false;
-    
+
   };
 
   ngOnInit() {
-    
+
     this.sub = this.route.params.subscribe(params => {
       this.id = params['id'];
-      
+
       this.location = this.mapService.getMarkerById(this.id);
       this.location.date = this.formatDate(new Date(this.location.date).toString());
       //this.location.date = new Date(this.location.date);
-      console.log(this.location);
-      
+
       this.dataLoaded = true;
     });
-    
+
   }
-  
+
   formatDate(str) {
     var date = str.slice(0,15);
-    
+
     var hour = str.slice(15,18);
     var time;
     if (parseInt(hour) <= 12) {

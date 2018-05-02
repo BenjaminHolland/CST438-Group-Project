@@ -18,9 +18,12 @@ Server.prototype.usingExpress = function(express) {
   return this;
 };
 Server.prototype.start = function() {
-  this.app.use(this.express.static(__dirname + '/../dist'));
+  const staticPath=__dirname + '/../dist';
+  console.debug(`Angular Server Running In ${__dirname}`);
+  console.debug(`Angular Server Serving From ${staticPath}`)
+  this.app.use(this.express.static(staticPath));
   return (this._server = this.app.listen(this.port, () => {
-    console.log("Web Port Listening On %d", this.port);
+    console.log(`Angular Server Listening On ${this.port}`);
   }));
 };
 module.exports = new Server();
