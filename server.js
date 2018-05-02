@@ -1,42 +1,30 @@
 /*
-const Express=require('express')
-const app=Express()
-
-app.use(Express.static(__dirname+'/dist'))
-
-app.listen(process.env.PORT||8080)
-*/
-const moment = require('moment');
-const webPort=8080;
+Server.js
+Server script for the project.
+Starts 2 servers, 1 for serving the angular content and one for managing the chat relay.
+NOTE:
+I'm not super up on the object scope for javascript or how express handles apps/servers, and I don't have time to find
+out. I THINK I could remove the references to the servers and be fine.
+ */
+const webPort=80;
 const socketPort=3000;
 
 const express=require('express');
 const app = express();
 
-//Creates and starts the socket server.
-const socketServer = require('http').Server(app).listen(socketPort,()=>{
-  console.log("WebSocket Listening On %d",socketPort);
-});
-const io = require('socket.io')(socketServer);
-io.on('connection', function(socket){
-  //message recieved from a client
-  socket.on('message', (msg) => {
-    //send message to all client
+//create and start the angular server
+const angularServer=require('./server/ng-server')
+  .boundTo(webPort)
+  .usingApp(app)
+  .usingExpress(express)
+  .start();
 
-    //get current time
-    var date = moment().utc('-8:00').toISOString();
-    date = date.slice(0,10) + ' ' + date.slice(11,16);
-    msg.time = date;
+//create and start the socket server
+const socketServer=require('./server/socket-server')
 
-    io.emit('serverMessage', msg);
-  })
-});
-
-//Create and configure the http server
-app.use(express.static(__dirname+'/dist'))
-app.listen(webPort,()=>{
-  console.log("Web Port Listening On %d",webPort);
-});
+  .boundTo(socketPort)
+  .usingApp(app)
+  .start();
 
 
 
