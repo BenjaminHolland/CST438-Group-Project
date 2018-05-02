@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { UserService } from '../../services/user-service/user.service';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {UserService} from '../../services/user-service/user.service';
 import * as firebase from 'firebase';
 
 @Component({
@@ -9,39 +9,33 @@ import * as firebase from 'firebase';
   styleUrls: ['./app-bar.component.css']
 })
 export class AppBarComponent implements OnInit {
+  get isLoggedIn(): boolean {
+    return this.userService.isLoggedIn();
+  }
 
-  isLoggedIn: string;
+  get currentUser(): string {
+    return this.userService.getUser().displayName;
+  }
 
   constructor(private router: Router,
-  			  public userService: UserService) {
-
-  	this.isLoggedIn = 'Login';
+              private userService: UserService) {
   }
 
   ngOnInit() {
-
-  	if (this.userService.isLoggedIn() == true) {
-  		this.isLoggedIn = 'Logout';
-  	}
-  	else {
-  		this.isLoggedIn = 'Login';
-  	}
-
   }
 
-  navigateTo(path: string) : void {
-  	this.router.navigateByUrl('/' + path);
+  navigateTo(path: string): void {
+    this.router.navigateByUrl('/' + path);
   }
 
   logout() {
-  	this.userService.logoutUser((err, res) => {
-  		if (err != null ) {
-  			console.log(err.message);
-  		}
-  		else {
-  			this.router.navigateByUrl('/');
-  		}
-  	});
+    this.userService.logoutUser((err, res) => {
+      if (err != null) {
+        console.log(err.message);
+      } else {
+        this.router.navigateByUrl('/');
+      }
+    });
   }
 
 }
