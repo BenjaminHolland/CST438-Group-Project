@@ -6,14 +6,17 @@ function Server() {
   this.port = null;
   this._server = null;
 };
+
 Server.prototype.boundTo = function (port) {
   this.port = port;
   return this;
 };
+
 Server.prototype.usingApp = function (app) {
   this.app = app;
   return this;
 };
+
 Server.prototype.start = function () {
 
   this._server = require('http').Server(this.app).listen(this.port, () => {
