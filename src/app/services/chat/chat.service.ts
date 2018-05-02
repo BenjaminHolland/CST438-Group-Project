@@ -34,8 +34,8 @@ export class ChatService {
     return Observable.create(observer => {
       this.socket.on('serverMessage', msg => {
         observer.next(msg);
-      })
-    })
+      });
+    });
   }
 
 }

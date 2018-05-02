@@ -25,18 +25,18 @@ Server.prototype.start = function () {
 
   this.io = require('socket.io')(this._server);
 
-  this.io.on('message', (msg) => {
-    //send message to all client
 
-    //get current time
-    var date = moment().utc('-8:00').toISOString();
-    date = date.slice(0, 10) + ' ' + date.slice(11, 16);
-    msg.time = date;
+  this.io.on('connection', socket=> {
+    socket.on('message', msg=> {
+      console.log(`got a message: ${msg}`);
+      //send message to all client
 
-    this.io.emit('serverMessage', msg);
-  });
-
-  this.io.on('connection', function (socket) {
+      //get current time
+      var date = moment().utc('-8:00').toISOString();
+      date = date.slice(0, 10) + ' ' + date.slice(11, 16);
+      msg.time = date;
+      this.io.emit('serverMessage', msg);
+    });
 
   });
 };
