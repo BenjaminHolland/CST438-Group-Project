@@ -43,19 +43,19 @@ export class ChatComponent implements OnInit {
 
 
   //scrolls chat to bottom of div
-  scrollToBottom() {
-    var chatDiv = document.getElementById('chat');
+  scrollToBottom():void {
+    let chatDiv = document.getElementById('chat');
     chatDiv.scrollTop = chatDiv.scrollHeight + 20;
   }
 
 
   //decides if enough messages are in char to need to scroll
-  chatShouldScroll() {
-    var chatDiv = document.getElementById('chat');
+  chatShouldScroll():void {
+    let chatDiv = document.getElementById('chat');
     return chatDiv.scrollTop + chatDiv.clientHeight === chatDiv.scrollHeight;
   }
 
-  submitMessage() {
+  submitMessage() :void{
 
     //send message to server
     this.chatService.sendMessage(this.newMessage.value);

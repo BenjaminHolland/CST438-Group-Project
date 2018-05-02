@@ -3,6 +3,7 @@ import * as io from 'socket.io-client';
 import {Observable} from 'rxjs/Observable';
 import {UserService} from '../user-service/user.service';
 import {environment} from "../../../environments/environment";
+import {MessageModel} from "../../models/Message";
 
 export interface Message {
   message: string;
@@ -12,26 +13,17 @@ export interface Message {
 @Injectable()
 export class ChatService {
 
-
-  private socket: SocketIOClient.Socket = null;
+  private socket: SocketIOClient.Socket = io.connect(`https://${environment.domain}`);
 
   constructor(private userService: UserService) {
-    console.log('in constructor');
-    this.socket = io.connect(`https://${environment.domain}`);
   }
 
-
-  sendMessage(message: string) {
-    const msg = {
-      message: message,
-      username: this.userService.getUser().displayName
-    };
-    this.socket.emit('message', msg);
+  sendMessage(message: string): void {
+    this.socket.emit('message', new MessageModel(message, this.userService.getUser().displayName));
   }
 
-
-  onMessage() {
-    return Observable.create(observer => {
+  onMessage(): Observable<Message> {
+    return new Observable<Message>(observer => {
       this.socket.on('serverMessage', msg => {
         observer.next(msg);
       });
