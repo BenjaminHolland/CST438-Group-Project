@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef, NgZone, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Output, Input, OnInit, ElementRef, NgZone, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {} from 'googlemaps';
 import {MapsAPILoader} from '@agm/core';
@@ -7,13 +7,29 @@ import {MapService} from '../../services/map/map.service';
 import {Subscription} from 'rxjs/Subscription';
 import {Resolve, RouterStateSnapshot, ActivatedRouteSnapshot} from '@angular/router';
 import {UserService} from '../../services/user-service/user.service';
+import {TeamService} from '../../services/team-service/team.service';
+
+declare var require: any;
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
+
+
 export class MapComponent implements OnInit {
+
+//emitter than sends a subscribable event when a new locatino
+  //object is formed. Other components can subscribe to it and
+  //get the location that was made in ths component
+  @Output() onLocation = new EventEmitter<any>();
+
+
+  @Input() showLocations: boolean = true;
+  @Input() showSearchMarker: boolean = false;
+  @Input() inputLat: number = null;
+  @Input() inputLng: number = null;
 
 
   title: string = 'My first AGM project';
@@ -53,8 +69,10 @@ export class MapComponent implements OnInit {
     private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone,
     public router: Router,
-    public mapService: MapService,
-    public userService: UserService) {
+    private mapService: MapService,
+    private userService: UserService,
+    private teamService: TeamService
+  ) {
 
     this.filter = 'all';
     this.showFilter = true;
@@ -73,9 +91,10 @@ export class MapComponent implements OnInit {
     this.searchMarker = {
       lat: this.homeCoords.lat - 0.05,
       lng: this.homeCoords.lng + 0.04,
-      isOpen: false,
+      isOpen: this.showSearchMarker,
       text: "Drag Me"
     };
+
 
     this.currentSearchLocation = {
       lat: 0.0,
@@ -88,6 +107,17 @@ export class MapComponent implements OnInit {
     this.zoom = 10;
     this.lat = 36.63536611993544;
     this.lng = -121.81724309921265;
+
+    if (this.inputLat && this.inputLng) {
+      this.lat = this.inputLat;
+      this.lng = this.inputLng;
+
+      this.searchMarker.lat = this.inputLat;
+      this.searchMarker.lng = this.inputLng;
+      this.getLocationInfo(this.inputLat, this.inputLng, (error, data) => {
+        this.searchMarker.text = data.name;
+      });
+    }
 
 
     //building map objec to pass into map selector in html
@@ -148,22 +178,26 @@ export class MapComponent implements OnInit {
 
       this.searchMarker.isOpen = res.marker.isOpen;
 
+      if (this.showSearchMarker) {
+        this.searchMarker.isOpen = true;
+      }
+
       if (res.marker.isOpen == true) {
         this.searchMarker.lat = this.lat;
         this.searchMarker.lng = this.lng;
       }
     });
 
-
   }
 
   ngOnInit() {
+
 
     this.mapService.downloadLocations((data) => {
       this.markers = data;
 
       for (var i = 0; i < this.markers.length; i++) {
-        //console.log(this.markers[i]);
+        console.log(this.markers[i]);
         var latStr = this.markers[i].coords.lat;
         var latNum = parseFloat(latStr);
         var lngStr = this.markers[i].coords.lng;
@@ -175,6 +209,10 @@ export class MapComponent implements OnInit {
       }
       this.dataLoaded = true;
     });
+
+    this.searchMarker.isOpen = this.showSearchMarker;
+
+    this.searchControl = new FormControl();
 
 
     this.searchControl = new FormControl();
@@ -212,10 +250,34 @@ export class MapComponent implements OnInit {
           this.getLocationInfo(place.geometry.location.lat(), place.geometry.location.lng(), (error, data) => {
 
             this.searchMarker.text = place.name;
+
+            if (this.inputLat && this.inputLng) {
+              this.lat = this.inputLat;
+              this.lng = this.inputLng;
+
+              this.searchMarker.lat = this.inputLat;
+              this.searchMarker.lng = this.inputLng;
+              this.getLocationInfo(this.inputLat, this.inputLng, (error, data) => {
+
+              });
+            }
           });
         });
       });
     });
+
+    if (this.inputLat && this.inputLng) {
+      this.lat = this.inputLat;
+      this.lng = this.inputLng;
+
+      this.searchMarker.lat = this.inputLat;
+      this.searchMarker.lng = this.inputLng;
+      this.getLocationInfo(this.inputLat, this.inputLng, (error, data) => {
+        if (data && data.name) {
+          this.searchMarker.text = data.name;
+        }
+      });
+    }
 
 
   }
@@ -378,6 +440,7 @@ export class MapComponent implements OnInit {
           }
 
 
+          this.onLocation.emit(data);
           this.mapService.emitClickEvent(data);
           callback(null, data);
         }
@@ -466,6 +529,14 @@ export class MapComponent implements OnInit {
 
     //navigate to location details component
     this.router.navigate(['map/locations', id]);
+  }
+
+  getTrophyIcon() {
+    return require('../../../images/trophy.png');
+  }
+
+  challengeBtnPressed(locId, teamId) {
+    this.router.navigate(['/teams/match', {locId: locId, teamId: teamId}]);
   }
 
 }
