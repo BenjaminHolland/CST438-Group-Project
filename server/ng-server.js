@@ -18,7 +18,7 @@ Server.prototype.usingExpress = function(express) {
   return this;
 };
 Server.prototype.start = function() {
-  this.app.use(this.express.static(__dirname + '/dist'));
+  this.app.use(this.express.static(__dirname + '/../dist'));
   return (this._server = this.app.listen(this.port, () => {
     console.log("Web Port Listening On %d", this.port);
   }));
