@@ -1,28 +1,28 @@
-import { Injectable } from '@angular/core';
-import  * as io from 'socket.io-client';
-import { Observable } from 'rxjs/Observable';
-import { UserService } from '../user-service/user.service';
+import {Injectable} from '@angular/core';
+import * as io from 'socket.io-client';
+import {Observable} from 'rxjs/Observable';
+import {UserService} from '../user-service/user.service';
 
-export interface Message{
+export interface Message {
   message: string;
   username: string;
 }
+
 @Injectable()
 export class ChatService {
 
 
-  private socket:SocketIOClient.Socket=null;
+  private socket: SocketIOClient.Socket = null;
 
   constructor(private userService: UserService) {
     console.log('in constructor');
-    this.socket = io.connect('http://localhost:3000');
-
+    this.socket = io.connect('https://cst438-group-jabb.herokuapp.com:3000');
 
 
   }
 
 
-  sendMessage(message:string) {
+  sendMessage(message: string) {
     var msg = {
       message: message,
       username: this.userService.getUser().displayName
