@@ -8,11 +8,11 @@ import { UserService } from '../../services/user-service/user.service';
   styleUrls: ['./team-list.component.css']
 })
 export class TeamListComponent implements OnInit {
-  
+
   @Input() team;
   displayMembers: boolean;
 
-  constructor(private teamService: TeamService, private userService: UserService) { 
+  constructor(private teamService: TeamService, private userService: UserService) {
     this.team = {
       name: "",
       id: "",
@@ -24,7 +24,7 @@ export class TeamListComponent implements OnInit {
       owner: {},
       sport: ""
     };
-    
+
     this.displayMembers = false;
   }
 
@@ -32,21 +32,21 @@ export class TeamListComponent implements OnInit {
    //call teamService = get teams from database
     this.teamService.downloadTeams()
     .then((teams) => {
-      
+
     })
   }
-  
-  
+
+
   //toggles displayMembers to show/hide team member list
   showMembers() {
     this.displayMembers = !this.displayMembers;
   }
-  
-  
-  
+
+
+
   removeUserFromTeam(id) {
-    
-    var uid = this.userService.getUser().uid;
+
+    var uid = this.userService.currentUser().uid;
     console.log(uid);
     this.teamService.removeUserFromTeam(id, uid);
   }

@@ -115,7 +115,7 @@ export class LocationComponent implements OnInit {
       //from forms and insert new location to db
       if (this.type == 'location') {
         //add event to database
-        var user = this.userService.getUser();
+        var user = this.userService.currentUser();
         var lat = this.locationCoords.lat;
         var lng = this.locationCoords.lng;
 
@@ -145,7 +145,7 @@ export class LocationComponent implements OnInit {
       //object. The find match component wants to intercept
       //the data in the form to use in its onw form
       else {
-        var user = this.userService.getUser();
+        var user = this.userService.currentUser();
         var lat = this.locationCoords.lat;
         var lng = this.locationCoords.lng;
 

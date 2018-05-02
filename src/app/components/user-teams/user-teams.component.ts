@@ -8,37 +8,37 @@ import { UserService } from '../../services/user-service/user.service';
   styleUrls: ['./user-teams.component.css']
 })
 export class UserTeamsComponent implements OnInit {
-  
+
   database;
   storage;
   teams;
 
-  constructor(private userService: UserService) { 
-    
+  constructor(private userService: UserService) {
+
     this.database = firebase.database();
     this.storage = firebase.storage();
-    
+
     this.teams = new Array();
-  
+
   }
 
   ngOnInit() {
-    
+
     //get the users teams from firebase
     var ref = this.database.ref('/teams');
     var self = this;
     //iterate through teams in db to see if it exists
     ref.once('value', function(snapshot) {
-      
+
       snapshot.forEach(function(dataSnap) {
         var data = dataSnap.val();
-        
+
         var newTeam;
         var members = data.members;
         for (var i = 0; i < members.length;i++) {
-          if (members[i].displayName == self.userService.getUser().displayName) {
+          if (members[i].displayName == self.userService.currentUser().displayName) {
             newTeam = data;
-            
+
             //get team icon
             var imgRef = self.storage.ref(data.imgUrl).getDownloadURL()
             .then(function(url) {
@@ -50,8 +50,8 @@ export class UserTeamsComponent implements OnInit {
       });
       console.log(self.teams);
      });
- 
-    
+
+
   }
 
 }

@@ -270,7 +270,7 @@ export class TeamService {
     }
 
     //check if user is already in team
-    var user = this.userService.getUser();
+    var user = this.userService.currentUser();
 
     //user not found
     if (!user) {
@@ -307,7 +307,7 @@ export class TeamService {
     }
 
     //check if user is already in team
-    var user = this.userService.getUser();
+    var user = this.userService.currentUser();
 
     //user not found
     if (!user) {
@@ -415,7 +415,7 @@ export class TeamService {
       	//check if location has teams
       	if (data.teams) {
 
-      		var user = self.userService.getUser();
+      		var user = self.userService.currentUser();
 
       		//search teamA to see if user is in it
       		for (var i = 0; i < data.teams.teamA.members.length;i++) {
@@ -438,26 +438,26 @@ export class TeamService {
      });
     });
   }
-  
-  
-  
+
+
+
   // updaes existing match
   updateMatch(newMatch) {
   	var id = newMatch.id;
-  	
+
   	var updates = {};
   	updates['locations/' + id] = newMatch;
-  	
+
   	this.database.ref().update(updates);
   }
-  
-  
+
+
   //decides if the logged in user is enrolled in any teams
   userHasTeam() {
-  	var user = this.userService.getUser();
-  	
-  	
-  	
+  	var user = this.userService.currentUser();
+
+
+
   	for (var i = 0; i < this.teams.length;i++) {
   		for (var j = 0; j < this.teams[i].members.length;j++) {
   			if (this.teams[i].members[j].displayName == user.displayName) {
@@ -465,20 +465,20 @@ export class TeamService {
   			}
   		}
   	}
-  	
+
   	return false;
   }
-  
-  
+
+
   updateTeam(newTeam) {
- 
-  	
+
+
   	var id = newTeam.id;
   	var updates = {};
   	updates['teams/' + id + '/wins'] = newTeam.wins;
   	updates['teams/' + id + '/losses'] = newTeam.losses;
   	this.database.ref().update(updates);
-  	
+
   }
 
 

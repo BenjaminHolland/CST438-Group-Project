@@ -99,7 +99,7 @@ export class CreateTeamComponent implements OnInit {
       //form valid so add team to db
       if (res == true) {
         //get currently logged in to to make them the team leader
-        var user = this.userService.getUser();
+        var user = this.userService.currentUser();
 
         //create team object to insert into database
         var team = {

@@ -14,7 +14,7 @@ export class AppBarComponent implements OnInit {
   }
 
   get currentUser(): string {
-    return this.userService.getUser().displayName;
+    return this.userService.currentUser().displayName;
   }
 
   constructor(private router: Router,
